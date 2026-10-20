@@ -261,6 +261,7 @@ ServiceFabricBackup/
 ContosoDashboard/*.db
 ContosoDashboard/*.db-shm
 ContosoDashboard/*.db-wal
+ContosoDashboard/AppData/
 
 # Business Intelligence projects
 *.rdl.data

@@ -1,0 +1,156 @@
+@page "/documents"
+@using System.Security.Claims
+@using ContosoDashboard.Models
+@using ContosoDashboard.Services
+@using ContosoDashboard.Shared.Documents
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject IDocumentService DocumentService
+@inject IProjectService ProjectService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<PageTitle>My Documents - ContosoDashboard</PageTitle>
+
+<div class="container-fluid">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1>My Documents</h1>
+            <p class="text-muted mb-0">Your uploaded work documents</p>
+        </div>
+        <button type="button" class="btn btn-primary" @onclick="OpenUploadAsync" disabled="@(currentUserId <= 0)">
+            <i class="bi bi-upload me-1" aria-hidden="true"></i>Upload documents
+        </button>
+    </div>
+
+    <div class="row g-3 align-items-end mb-4">
+        <div class="col-sm-6 col-lg-3">
+            <label class="form-label" for="filterCategory">Category</label>
+            <select id="filterCategory" class="form-select" @bind="categoryFilter">
+                <option value="">All categories</option>
+                @foreach (var category in DocumentCategories.All)
+                {
+                    <option value="@category">@category</option>
+                }
+            </select>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <label class="form-label" for="filterProject">Project</label>
+            <select id="filterProject" class="form-select" @bind="projectFilter">
+                <option value="">All projects</option>
+                @foreach (var project in projects)
+                {
+                    <option value="@project.ProjectId">@project.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-sm-6 col-lg-2">
+            <label class="form-label" for="filterFrom">Uploaded from</label>
+            <InputDate id="filterFrom" class="form-control" @bind-Value="fromDate" />
+        </div>
+        <div class="col-sm-6 col-lg-2">
+            <label class="form-label" for="filterTo">Uploaded to</label>
+            <InputDate id="filterTo" class="form-control" @bind-Value="toDate" />
+        </div>
+        <div class="col-sm-6 col-lg-1 d-grid">
+            <button type="button" class="btn btn-secondary" @onclick="LoadDocumentsAsync">Apply</button>
+        </div>
+        <div class="col-sm-6 col-lg-1 d-grid">
+            <button type="button" class="btn btn-outline-secondary" @onclick="ClearFiltersAsync">Clear</button>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <div class="alert alert-danger" role="alert">@errorMessage</div>
+    }
+
+    @if (isLoading || documents is null)
+    {
+        <p><em>Loading documents...</em></p>
+    }
+    else if (documents.Count == 0)
+    {
+        <div class="alert alert-info">No documents yet.</div>
+    }
+    else
+    {
+        <DocumentTable Items="documents" Sortable="true" OnSort="SortDocumentsAsync" />
+    }
+</div>
+
+<DocumentUploadDialog @ref="uploadDialog" OnUploaded="LoadDocumentsAsync" />
+
+@code {
+    private List<DocumentListItem>? documents;
+    private List<Project> projects = [];
+    private DocumentUploadDialog? uploadDialog;
+    private string categoryFilter = string.Empty;
+    private int? projectFilter;
+    private DateTime? fromDate;
+    private DateTime? toDate;
+    private DocumentSort sort = DocumentSort.UploadedDateDesc;
+    private int currentUserId;
+    private bool isLoading;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (int.TryParse(authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId))
+            currentUserId = userId;
+
+        if (currentUserId > 0)
+        {
+            projects = await ProjectService.GetUserProjectsAsync(currentUserId);
+            await LoadDocumentsAsync();
+        }
+        else
+        {
+            documents = [];
+        }
+    }
+
+    private async Task LoadDocumentsAsync()
+    {
+        if (currentUserId <= 0)
+            return;
+
+        isLoading = true;
+        errorMessage = null;
+        try
+        {
+            documents = (await DocumentService.GetMyDocumentsAsync(currentUserId, new DocumentQuery(
+                string.IsNullOrWhiteSpace(categoryFilter) ? null : categoryFilter,
+                projectFilter,
+                fromDate,
+                toDate,
+                sort))).ToList();
+        }
+        catch (Exception)
+        {
+            errorMessage = "Documents could not be loaded. Please try again.";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private Task SortDocumentsAsync(DocumentSort nextSort)
+    {
+        sort = nextSort;
+        return LoadDocumentsAsync();
+    }
+
+    private async Task ClearFiltersAsync()
+    {
+        categoryFilter = string.Empty;
+        projectFilter = null;
+        fromDate = null;
+        toDate = null;
+        sort = DocumentSort.UploadedDateDesc;
+        await LoadDocumentsAsync();
+    }
+
+    private Task OpenUploadAsync() => uploadDialog?.ShowAsync() ?? Task.CompletedTask;
+}

@@ -32,10 +32,10 @@ description: "Task list for Document Upload and Management"
 
 **Purpose**: Test project, ignore rules, and configuration needed before any feature code.
 
-- [ ] T001 Create xUnit test project `ContosoDashboard.Tests/ContosoDashboard.Tests.csproj` targeting `net8.0` with `<IsPackable>false</IsPackable>`. Add packages `Microsoft.NET.Test.Sdk`, `xunit` 2.x, `xunit.runner.visualstudio`, `Microsoft.AspNetCore.Mvc.Testing` 8.0.x, and `Microsoft.EntityFrameworkCore.Sqlite` 8.0.0, plus a `ProjectReference` to `ContosoDashboard/ContosoDashboard.csproj`. Verify `dotnet test ContosoDashboard.Tests/ContosoDashboard.Tests.csproj` runs (0 tests).
-- [ ] T002 [P] Append `public partial class Program;` at the end of `ContosoDashboard/Program.cs` so `WebApplicationFactory<Program>` can reference it.
-- [ ] T003 [P] Add `ContosoDashboard/AppData/` to `.gitignore` under the existing "Local SQLite database" block.
-- [ ] T004 [P] Add configuration sections to `ContosoDashboard/appsettings.json`: `"DocumentStorage": { "RootPath": "AppData/uploads" }` and `"MalwareScanning": { "Host": "127.0.0.1", "Port": 3310, "TimeoutSeconds": 30 }`.
+- [X] T001 Create xUnit test project `ContosoDashboard.Tests/ContosoDashboard.Tests.csproj` targeting `net8.0` with `<IsPackable>false</IsPackable>`. Add packages `Microsoft.NET.Test.Sdk`, `xunit` 2.x, `xunit.runner.visualstudio`, `Microsoft.AspNetCore.Mvc.Testing` 8.0.x, and `Microsoft.EntityFrameworkCore.Sqlite` 8.0.0, plus a `ProjectReference` to `ContosoDashboard/ContosoDashboard.csproj`. Verify `dotnet test ContosoDashboard.Tests/ContosoDashboard.Tests.csproj` runs (0 tests).
+- [X] T002 [P] Append `public partial class Program;` at the end of `ContosoDashboard/Program.cs` so `WebApplicationFactory<Program>` can reference it.
+- [X] T003 [P] Add `ContosoDashboard/AppData/` to `.gitignore` under the existing "Local SQLite database" block.
+- [X] T004 [P] Add configuration sections to `ContosoDashboard/appsettings.json`: `"DocumentStorage": { "RootPath": "AppData/uploads" }` and `"MalwareScanning": { "Host": "127.0.0.1", "Port": 3310, "TimeoutSeconds": 30 }`.
 
 ---
 
@@ -47,7 +47,7 @@ description: "Task list for Document Upload and Management"
 
 ### Entities and schema
 
-- [ ] T005 [P] Create `Document` and static `DocumentCategories` (`All` = `Project Documents`, `Team Resources`, `Personal Files`, `Reports`, `Presentations`, `Other`) in `ContosoDashboard/Models/Document.cs`. Fields per data-model.md:
+- [X] T005 [P] Create `Document` and static `DocumentCategories` (`All` = `Project Documents`, `Team Resources`, `Personal Files`, `Reports`, `Presentations`, `Other`) in `ContosoDashboard/Models/Document.cs`. Fields per data-model.md:
   - `DocumentId` int PK identity: "Integer key (stakeholder constraint)".
   - `Title` `[Required][MaxLength(200)]`: "Required; trimmed; non-empty".
   - `Description` `[MaxLength(2000)]` nullable.
@@ -60,16 +60,16 @@ description: "Task list for Document Upload and Management"
   - `ProjectId` int? FK.
   - `UploadedDate`, `UpdatedDate` (UTC).
   - Navigations: `UploadedByUser`, `Project`, `Tags`, `Shares`, `TaskLinks`.
-- [ ] T006 [P] Create `DocumentTag` in `ContosoDashboard/Models/DocumentTag.cs`: `DocumentTagId` PK, `DocumentId` FK, `Tag` `[Required][MaxLength(50)]` ("Trimmed, lowercased, non-empty"), and navigation `Document`.
-- [ ] T007 [P] Create `DocumentShare` in `ContosoDashboard/Models/DocumentShare.cs` with:
+- [X] T006 [P] Create `DocumentTag` in `ContosoDashboard/Models/DocumentTag.cs`: `DocumentTagId` PK, `DocumentId` FK, `Tag` `[Required][MaxLength(50)]` ("Trimmed, lowercased, non-empty"), and navigation `Document`.
+- [X] T007 [P] Create `DocumentShare` in `ContosoDashboard/Models/DocumentShare.cs` with:
   - `DocumentShareId` PK, `DocumentId` FK.
   - `SharedWithUserId` int? FK ("Set for a user share").
   - `SharedWithDepartment` `[MaxLength(100)]` nullable ("Set for a team share (team = department)").
   - `SharedByUserId` int FK.
   - `SharedDate` (UTC).
   - Navigations `Document`, `SharedWithUser`, `SharedByUser`.
-- [ ] T008 [P] Create `TaskDocument` in `ContosoDashboard/Models/TaskDocument.cs`: `TaskDocumentId` PK, `TaskId` FK, `DocumentId` FK, `AttachedByUserId` FK, `AttachedDate` (UTC), and navigations `Task`, `Document`, `AttachedByUser`.
-- [ ] T009 [P] Create `DocumentActivity` and static `DocumentActions` (`Uploaded`, `Downloaded`, `Previewed`, `MetadataUpdated`, `Replaced`, `Shared`, `Unshared`, `Deleted`) in `ContosoDashboard/Models/DocumentActivity.cs`. Fields:
+- [X] T008 [P] Create `TaskDocument` in `ContosoDashboard/Models/TaskDocument.cs`: `TaskDocumentId` PK, `TaskId` FK, `DocumentId` FK, `AttachedByUserId` FK, `AttachedDate` (UTC), and navigations `Task`, `Document`, `AttachedByUser`.
+- [X] T009 [P] Create `DocumentActivity` and static `DocumentActions` (`Uploaded`, `Downloaded`, `Previewed`, `MetadataUpdated`, `Replaced`, `Shared`, `Unshared`, `Deleted`) in `ContosoDashboard/Models/DocumentActivity.cs`. Fields:
   - `DocumentActivityId` PK.
   - `DocumentId` int? ("audit survives deletion").
   - `DocumentTitle` `[MaxLength(200)]` snapshot; `FileType` `[MaxLength(255)]` snapshot.
@@ -77,8 +77,8 @@ description: "Task list for Document Upload and Management"
   - `Action` `[MaxLength(30)]`.
   - `Details` `[MaxLength(500)]` nullable ("Never contains file content or storage paths").
   - `OccurredDate` (UTC).
-- [ ] T010 [P] Append `DocumentShared` and `DocumentAdded` to the **end** of `NotificationType` in `ContosoDashboard/Models/Notification.cs`. Do not reorder existing values, so stored integers are preserved.
-- [ ] T011 Update `ContosoDashboard/Data/ApplicationDbContext.cs` (depends on T005–T009):
+- [X] T010 [P] Append `DocumentShared` and `DocumentAdded` to the **end** of `NotificationType` in `ContosoDashboard/Models/Notification.cs`. Do not reorder existing values, so stored integers are preserved.
+- [X] T011 Update `ContosoDashboard/Data/ApplicationDbContext.cs` (depends on T005–T009):
   - **DbSets**: `Documents`, `DocumentTags`, `DocumentShares`, `TaskDocuments`, `DocumentActivities`.
   - **Delete behavior**: `Document.UploadedByUser` and `Document.Project` `Restrict`. `DocumentTag`, `DocumentShare`, and `TaskDocument` → `Document` `Cascade`. `TaskDocument` → `TaskItem` `Cascade`. `DocumentShare` user FKs and `TaskDocument.AttachedByUser` `Restrict`. `DocumentActivity.DocumentId` `SetNull`. `DocumentActivity.UserId` `Restrict`.
   - **Indexes**: unique `Document.StoragePath`; `Document` (`UploadedByUserId`), (`ProjectId`), (`UploadedDate`), (`Category`); unique `DocumentTag(DocumentId, Tag)` and `DocumentTag(Tag)`; unique `DocumentShare(DocumentId, SharedWithUserId)` and `(DocumentId, SharedWithDepartment)`; `DocumentShare(SharedWithUserId)`, `(SharedWithDepartment)`; unique `TaskDocument(TaskId, DocumentId)`; `DocumentActivity` (`OccurredDate`), (`Action`, `OccurredDate`), (`UserId`), (`DocumentId`).
@@ -87,17 +87,17 @@ description: "Task list for Document Upload and Management"
 
 ### Abstractions and contracts
 
-- [ ] T012 [P] Create `IFileStorageService` (signatures exactly as in contracts/service-interfaces.md: `UploadAsync(Stream, string storageKey, string contentType, CancellationToken)`, `DeleteAsync`, `DownloadAsync`, `GetUrlAsync`) in `ContosoDashboard/Services/Storage/IFileStorageService.cs`, and `FileStorageOptions { RootPath = "AppData/uploads" }` in `ContosoDashboard/Services/Storage/FileStorageOptions.cs`.
-- [ ] T013 [P] Create `ScanOutcome { Clean, Infected, Error }`, `ScanResult(ScanOutcome Outcome, string? Detail)`, and `IMalwareScanner.ScanAsync(Stream, CancellationToken)` in `ContosoDashboard/Services/Scanning/IMalwareScanner.cs`. Create `MalwareScanningOptions { Host = "127.0.0.1", Port = 3310, TimeoutSeconds = 30 }` in `ContosoDashboard/Services/Scanning/MalwareScanningOptions.cs`.
-- [ ] T014 [P] Create the shell of `IDocumentService` in `ContosoDashboard/Services/DocumentService.cs`:
+- [X] T012 [P] Create `IFileStorageService` (signatures exactly as in contracts/service-interfaces.md: `UploadAsync(Stream, string storageKey, string contentType, CancellationToken)`, `DeleteAsync`, `DownloadAsync`, `GetUrlAsync`) in `ContosoDashboard/Services/Storage/IFileStorageService.cs`, and `FileStorageOptions { RootPath = "AppData/uploads" }` in `ContosoDashboard/Services/Storage/FileStorageOptions.cs`.
+- [X] T013 [P] Create `ScanOutcome { Clean, Infected, Error }`, `ScanResult(ScanOutcome Outcome, string? Detail)`, and `IMalwareScanner.ScanAsync(Stream, CancellationToken)` in `ContosoDashboard/Services/Scanning/IMalwareScanner.cs`. Create `MalwareScanningOptions { Host = "127.0.0.1", Port = 3310, TimeoutSeconds = 30 }` in `ContosoDashboard/Services/Scanning/MalwareScanningOptions.cs`.
+- [X] T014 [P] Create the shell of `IDocumentService` in `ContosoDashboard/Services/DocumentService.cs`:
   - Declare the interface and all records/enums exactly as in contracts/service-interfaces.md: `UploadRequest`, `DocumentOperationResult`, `DocumentListItem`, `DocumentDetail`, `DocumentShareInfo`, `DocumentQuery`, `DocumentSort`.
   - Add a `DocumentService` class whose constructor takes `ApplicationDbContext`, `IFileStorageService`, `IMalwareScanner`, `DocumentValidator`, `DocumentAccessPolicy`, `IDocumentActivityService`, `INotificationService`, and `ILogger<DocumentService>`.
   - Every method throws `NotImplementedException` until its story task implements it.
-- [ ] T015 [P] Create `IDocumentActivityService`, the `DocumentReport` record (per contract), and `DocumentActivityService` in `ContosoDashboard/Services/DocumentActivityService.cs`. Implement `RecordAsync` (adds a `DocumentActivity` with `OccurredDate = DateTime.UtcNow` to the current context without calling `SaveChanges`, so callers commit it in their transaction). `GetReportAsync` throws `NotImplementedException` until T070.
+- [X] T015 [P] Create `IDocumentActivityService`, the `DocumentReport` record (per contract), and `DocumentActivityService` in `ContosoDashboard/Services/DocumentActivityService.cs`. Implement `RecordAsync` (adds a `DocumentActivity` with `OccurredDate = DateTime.UtcNow` to the current context without calling `SaveChanges`, so callers commit it in their transaction). `GetReportAsync` throws `NotImplementedException` until T070.
 
 ### Test infrastructure
 
-- [ ] T016 [P] Create shared test helpers in `ContosoDashboard.Tests/TestInfrastructure/`:
+- [X] T016 [P] Create shared test helpers in `ContosoDashboard.Tests/TestInfrastructure/`:
   - `SqliteTestDatabase.cs`: opens a `DataSource=:memory:` connection, builds an `ApplicationDbContext`, calls `EnsureCreated()` (seeded users 1–4 and project 1), and provides helpers to add users, departments, projects, members, and tasks.
   - `FakeMalwareScanner.cs`: a settable `ScanResult` with a call counter.
   - `TempFileStorage.cs`: a `LocalFileStorageService` over a unique temp directory, deleted on dispose.
@@ -106,43 +106,43 @@ description: "Task list for Document Upload and Management"
 
 ### Tests for foundational components (write first; must fail)
 
-- [ ] T017 [P] Write `ContosoDashboard.Tests/Services/DocumentValidatorTests.cs` covering:
+- [X] T017 [P] Write `ContosoDashboard.Tests/Services/DocumentValidatorTests.cs` covering:
   - Accepts each allowlisted extension with a matching signature: `%PDF-`; `FF D8 FF`; `89 50 4E 47 0D 0A 1A 0A`; `50 4B 03 04` for docx/xlsx/pptx; `D0 CF 11 E0 A1 B1 1A E1` for doc/xls/ppt; `.txt` with valid UTF-8 and no NUL bytes in the first 8 KB.
   - Rejects: an unknown extension, a signature mismatch (text renamed `.pdf`), a 0-byte file, and 26,214,401 bytes. Accepts exactly 26,214,400 bytes.
   - Maps the extension to the server MIME type and ignores the browser type.
   - Error messages match the data-model.md validation table.
-- [ ] T018 [P] Write `ContosoDashboard.Tests/Storage/LocalFileStorageServiceTests.cs` covering:
+- [X] T018 [P] Write `ContosoDashboard.Tests/Storage/LocalFileStorageServiceTests.cs` covering:
   - Upload then download round-trip.
   - Directories are created per key.
   - `DeleteAsync` on a missing key is a no-op.
   - `DownloadAsync` on a missing key throws `FileNotFoundException`.
   - Keys with `..` or absolute paths throw `InvalidOperationException`.
   - `GetUrlAsync` throws `NotSupportedException`.
-- [ ] T019 [P] Write `ContosoDashboard.Tests/Services/ClamAvMalwareScannerTests.cs` against an in-test `TcpListener` fake clamd: replies `stream: OK` → `Clean`; `stream: Eicar-Signature FOUND` → `Infected` with the signature; no listener (connection refused) → `Error`; a listener that never replies → `Error` after the configured timeout. The scanner never throws.
-- [ ] T020 [P] Write `ContosoDashboard.Tests/Services/DocumentAccessPolicyTests.cs` covering every cell of the data-model.md authorization matrix (Owner, ProjectAccess, PM, TeamLead same department vs. different department, Shared by user, Shared by department, Admin, unrelated user) for: read, edit metadata, change project, replace, delete, share. Include the case of a user removed from a project, who keeps access only as Owner or Shared.
+- [X] T019 [P] Write `ContosoDashboard.Tests/Services/ClamAvMalwareScannerTests.cs` against an in-test `TcpListener` fake clamd: replies `stream: OK` → `Clean`; `stream: Eicar-Signature FOUND` → `Infected` with the signature; no listener (connection refused) → `Error`; a listener that never replies → `Error` after the configured timeout. The scanner never throws.
+- [X] T020 [P] Write `ContosoDashboard.Tests/Services/DocumentAccessPolicyTests.cs` covering every cell of the data-model.md authorization matrix (Owner, ProjectAccess, PM, TeamLead same department vs. different department, Shared by user, Shared by department, Admin, unrelated user) for: read, edit metadata, change project, replace, delete, share. Include the case of a user removed from a project, who keeps access only as Owner or Shared.
 
 ### Foundational implementation
 
-- [ ] T021 [P] Implement `DocumentValidator` in `ContosoDashboard/Services/DocumentValidator.cs`:
+- [X] T021 [P] Implement `DocumentValidator` in `ContosoDashboard/Services/DocumentValidator.cs`:
   - Extension allowlist `.pdf .doc .docx .xls .xlsx .ppt .pptx .txt .jpg .jpeg .png` with the content signatures from research.md §4.
   - Size `1 … 26,214,400` bytes.
   - The extension → MIME map from data-model.md, plus an `IsPreviewable(mime)` helper for `application/pdf`, `image/jpeg`, `image/png`.
   - Metadata validation: Title 1–200 after trim; Category in `DocumentCategories.All`; Description ≤ 2000; tags trimmed, lowercased, de-duplicated, max 10, each ≤ 50.
   - Return the user-facing messages from the data-model.md validation table. Make T017 pass.
-- [ ] T022 [P] Implement `LocalFileStorageService` in `ContosoDashboard/Services/Storage/LocalFileStorageService.cs`:
+- [X] T022 [P] Implement `LocalFileStorageService` in `ContosoDashboard/Services/Storage/LocalFileStorageService.cs`:
   - Resolve `RootPath` against `IHostEnvironment.ContentRootPath`, and require each `Path.GetFullPath(Path.Combine(root, key))` to start with the root.
   - Write to a temp file in the target directory, then `File.Move`.
   - Make T018 pass.
-- [ ] T023 [P] Implement `ClamAvMalwareScanner` in `ContosoDashboard/Services/Scanning/ClamAvMalwareScanner.cs` using `TcpClient`: send `zINSTREAM\0`, then 64 KB chunks each prefixed by a 4-byte big-endian length, then a zero-length terminator. Parse `OK` / `FOUND`. Map timeouts, socket errors, and unexpected replies to `Error`. Never throw. Make T019 pass.
-- [ ] T024 Implement `DocumentAccessPolicy` in `ContosoDashboard/Services/DocumentAccessPolicy.cs`:
+- [X] T023 [P] Implement `ClamAvMalwareScanner` in `ContosoDashboard/Services/Scanning/ClamAvMalwareScanner.cs` using `TcpClient`: send `zINSTREAM\0`, then 64 KB chunks each prefixed by a 4-byte big-endian length, then a zero-length terminator. Parse `OK` / `FOUND`. Map timeouts, socket errors, and unexpected replies to `Error`. Never throw. Make T019 pass.
+- [X] T024 Implement `DocumentAccessPolicy` in `ContosoDashboard/Services/DocumentAccessPolicy.cs`:
   - A `DocumentPermissions` record (`CanRead`, `CanEdit`, `CanChangeProject`, `CanReplace`, `CanDelete`, `CanShare`) and `Task<DocumentPermissions?> EvaluateAsync(int actorUserId, int documentId)`, which returns null when the document is missing.
   - An `IQueryable<Document> ReadableBy(IQueryable<Document>, User actor)` filter for lists and search, which translates to SQL and does not load rows client-side.
   - Load the actor's role and department from the DB on every call. Make T020 pass.
-- [ ] T025 Register services in `ContosoDashboard/Program.cs` (depends on T014, T015, T021–T024):
+- [X] T025 Register services in `ContosoDashboard/Program.cs` (depends on T014, T015, T021–T024):
   - Bind `FileStorageOptions` to `DocumentStorage` and `MalwareScanningOptions` to `MalwareScanning`.
   - Register `IFileStorageService` → `LocalFileStorageService` and `IMalwareScanner` → `ClamAvMalwareScanner` as singletons.
   - Register `DocumentValidator`, `DocumentAccessPolicy`, `IDocumentActivityService`, and `IDocumentService` as scoped.
-- [ ] T026 [P] Add a `Department` claim (`new Claim("Department", user.Department ?? string.Empty)`) to the claims issued in `ContosoDashboard/Pages/Login.cshtml.cs`, alongside NameIdentifier, Name, Email, and Role.
+- [X] T026 [P] Add a `Department` claim (`new Claim("Department", user.Department ?? string.Empty)`) to the claims issued in `ContosoDashboard/Pages/Login.cshtml.cs`, alongside NameIdentifier, Name, Email, and Role.
 
 **Checkpoint**: `dotnet build` and `dotnet test` pass (T017–T020 green). Story work can begin.
 
@@ -156,14 +156,14 @@ description: "Task list for Document Upload and Management"
 
 ### Tests for User Story 1 (write first; must fail)
 
-- [ ] T027 [P] [US1] Write `ContosoDashboard.Tests/Services/DocumentUploadTests.cs` covering:
+- [X] T027 [P] [US1] Write `ContosoDashboard.Tests/Services/DocumentUploadTests.cs` covering:
   - A valid upload creates one `Document` with `StoragePath` matching `^4/personal/[0-9a-f]{32}\.pdf$`, stores the file, normalizes the tags, and writes one `Uploaded` activity.
   - Project upload by a member stores under `4/1/`. Project upload by a non-member is rejected with "You can only add documents to projects you belong to.".
   - Oversize, empty, unsupported, and signature-mismatch files are rejected, with nothing stored.
   - Scanner `Infected` and `Error` results are rejected, and no file or row exists.
   - A DB failure after the file write (simulated with a `SaveChangesInterceptor` that throws) leaves no row, and the stored file is deleted.
   - Invalid metadata (missing title or invalid category) is rejected before scanning.
-- [ ] T028 [P] [US1] Write `ContosoDashboard.Tests/Services/MyDocumentsQueryTests.cs` covering:
+- [X] T028 [P] [US1] Write `ContosoDashboard.Tests/Services/MyDocumentsQueryTests.cs` covering:
   - Returns only the actor's uploads.
   - Each of the 8 `DocumentSort` values orders correctly.
   - Filters by category, project, and the `FromDate`/`ToDate` range (inclusive day bounds) work alone and combined.
@@ -171,7 +171,7 @@ description: "Task list for Document Upload and Management"
 
 ### Implementation for User Story 1
 
-- [ ] T029 [US1] Implement `UploadAsync` in `ContosoDashboard/Services/DocumentService.cs` in this order (research.md §7):
+- [X] T029 [US1] Implement `UploadAsync` in `ContosoDashboard/Services/DocumentService.cs` in this order (research.md §7):
   1. Validate metadata and the file with `DocumentValidator`.
   2. If `ProjectId` is set, require ProjectAccess.
   3. Scan with `IMalwareScanner` (non-`Clean` → reject with the matching message).
@@ -181,13 +181,13 @@ description: "Task list for Document Upload and Management"
   7. On a DB exception, delete the stored file and return a failure.
 
   Rewind or buffer the stream between scanning and storing. Make T027 pass.
-- [ ] T030 [US1] Implement `GetMyDocumentsAsync` in `ContosoDashboard/Services/DocumentService.cs` with `AsNoTracking`, server-side filter and sort per `DocumentQuery`, and projection to `DocumentListItem` (uploader name, project name, tags, `CanPreview`). Make T028 pass.
-- [ ] T031 [P] [US1] Create `ContosoDashboard/Shared/Documents/DocumentTable.razor` per contracts/ui-routes.md:
+- [X] T030 [US1] Implement `GetMyDocumentsAsync` in `ContosoDashboard/Services/DocumentService.cs` with `AsNoTracking`, server-side filter and sort per `DocumentQuery`, and projection to `DocumentListItem` (uploader name, project name, tags, `CanPreview`). Make T028 pass.
+- [X] T031 [P] [US1] Create `ContosoDashboard/Shared/Documents/DocumentTable.razor` per contracts/ui-routes.md:
   - Parameters `Items`, `Sortable`, `OnSort`.
   - Columns: Title (plain text for now), Category, Uploaded (local time), Size (human-readable KB/MB), Project.
   - Sortable headers raise `OnSort` with the next `DocumentSort`.
   - Empty state "No documents yet."
-- [ ] T032 [P] [US1] Create `ContosoDashboard/Shared/Documents/DocumentUploadDialog.razor` (Bootstrap modal) with parameters `int? FixedProjectId`, `int? TaskId`, `EventCallback OnUploaded`. Fields and controls:
+- [X] T032 [P] [US1] Create `ContosoDashboard/Shared/Documents/DocumentUploadDialog.razor` (Bootstrap modal) with parameters `int? FixedProjectId`, `int? TaskId`, `EventCallback OnUploaded`. Fields and controls:
   - `InputFile multiple` with `accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png"`.
   - Shared Category select (6 values), Description, and comma-separated Tags.
   - Per-file Title, defaulting to the file name without its extension and editable.
@@ -199,12 +199,12 @@ description: "Task list for Document Upload and Management"
   - Copy to a `MemoryStream` in 80 KB chunks, updating a per-file progress bar with `StateHasChanged` after each chunk. Set `Position = 0`, clear the `IBrowserFile` reference, and call `IDocumentService.UploadAsync`.
   - Show a ✓/✗ message per file. Files larger than 25 MB are rejected client-side with the same message before streaming.
   - Re-key `InputFile` with a new `@key` after the batch, then invoke `OnUploaded`.
-- [ ] T033 [US1] Create `ContosoDashboard/Pages/Documents.razor` (`@page "/documents"`, `@attribute [Authorize]`):
+- [X] T033 [US1] Create `ContosoDashboard/Pages/Documents.razor` (`@page "/documents"`, `@attribute [Authorize]`):
   - Filter bar: Category select, Project select (user's projects), From/To dates, Apply/Clear.
   - `DocumentTable` with sorting.
   - **Upload** button that opens `DocumentUploadDialog` and reloads the list on `OnUploaded`.
   - Loading and error states.
-- [ ] T034 [US1] Add a "My Documents" `NavLink` (`href="documents"`, `bi bi-file-earmark-text`) after "My Projects" in `ContosoDashboard/Shared/NavMenu.razor`.
+- [X] T034 [US1] Add a "My Documents" `NavLink` (`href="documents"`, `bi bi-file-earmark-text`) after "My Projects" in `ContosoDashboard/Shared/NavMenu.razor`.
 
 **Checkpoint**: The MVP is complete. Run T027–T028 and quickstart scenarios 1–7; US1 is demoable on its own.
 

@@ -29,7 +29,7 @@ namespace ContosoDashboard.Pages
         public async Task<IActionResult> OnPostAsync(int selectedUserId)
         {
             Console.WriteLine($"Login POST: selectedUserId = {selectedUserId}");
-            
+
             // Reload users for the form in case of error
             Users = await _userService.GetAllUsersAsync();
 
@@ -52,14 +52,15 @@ namespace ContosoDashboard.Pages
             try
             {
                 Console.WriteLine($"Login POST: Attempting to sign in user {user.DisplayName}");
-                
+
                 // Create claims for the authenticated user
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                     new Claim(ClaimTypes.Name, user.DisplayName),
                     new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Role, user.Role.ToString())
+                    new Claim(ClaimTypes.Role, user.Role.ToString()),
+                    new Claim("Department", user.Department ?? string.Empty)
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -75,7 +76,7 @@ namespace ContosoDashboard.Pages
                     authProperties);
 
                 Console.WriteLine($"Login POST: Sign in successful, redirecting to /");
-                
+
                 // Update last login date
                 user.LastLoginDate = DateTime.UtcNow;
                 await _userService.UpdateUserProfileAsync(user, user.UserId);

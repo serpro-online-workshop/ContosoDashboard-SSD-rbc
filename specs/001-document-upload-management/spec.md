@@ -2,7 +2,7 @@
 
 **Feature Branch**: `001-document-upload-management`  
 **Created**: 2026-10-20  
-**Status**: Draft  
+**Status**: Approved
 **Input**: User description: "Document upload and management for ContosoDashboard, as defined in StakeholderDocs/document-upload-and-management-feature.md: employees upload work-related documents, organize them by category and project, find them through search, share them with colleagues, and use them from tasks and the dashboard, with role-based access and activity auditing."
 
 ## User Scenarios & Testing *(mandatory)*

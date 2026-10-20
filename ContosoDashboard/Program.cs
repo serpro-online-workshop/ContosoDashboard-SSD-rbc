@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using ContosoDashboard.Data;
 using ContosoDashboard.Services;
+using ContosoDashboard.Services.Scanning;
+using ContosoDashboard.Services.Storage;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -43,6 +45,15 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+
+builder.Services.Configure<FileStorageOptions>(builder.Configuration.GetSection("DocumentStorage"));
+builder.Services.Configure<MalwareScanningOptions>(builder.Configuration.GetSection("MalwareScanning"));
+builder.Services.AddSingleton<IFileStorageService, LocalFileStorageService>();
+builder.Services.AddSingleton<IMalwareScanner, ClamAvMalwareScanner>();
+builder.Services.AddScoped<DocumentValidator>();
+builder.Services.AddScoped<DocumentAccessPolicy>();
+builder.Services.AddScoped<IDocumentActivityService, DocumentActivityService>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 // Add HttpContextAccessor for accessing user claims
 builder.Services.AddHttpContextAccessor();
@@ -109,3 +120,5 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
 app.Run();
+
+public partial class Program { }

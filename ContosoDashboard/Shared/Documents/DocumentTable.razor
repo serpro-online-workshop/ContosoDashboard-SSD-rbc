@@ -1,0 +1,93 @@
+@using ContosoDashboard.Services
+
+@if (Items.Count == 0)
+{
+    <div class="alert alert-info">No documents yet.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        @if (Sortable)
+                        {
+                            <button type="button" class="btn btn-link p-0 text-decoration-none" @onclick="() => SortBy(DocumentSort.TitleAsc, DocumentSort.TitleDesc)">Title</button>
+                        }
+                        else
+                        {
+                            <span>Title</span>
+                        }
+                    </th>
+                    <th scope="col">
+                        @if (Sortable)
+                        {
+                            <button type="button" class="btn btn-link p-0 text-decoration-none" @onclick="() => SortBy(DocumentSort.CategoryAsc, DocumentSort.CategoryDesc)">Category</button>
+                        }
+                        else
+                        {
+                            <span>Category</span>
+                        }
+                    </th>
+                    <th scope="col">
+                        @if (Sortable)
+                        {
+                            <button type="button" class="btn btn-link p-0 text-decoration-none" @onclick="() => SortBy(DocumentSort.UploadedDateDesc, DocumentSort.UploadedDateAsc)">Uploaded</button>
+                        }
+                        else
+                        {
+                            <span>Uploaded</span>
+                        }
+                    </th>
+                    <th scope="col">
+                        @if (Sortable)
+                        {
+                            <button type="button" class="btn btn-link p-0 text-decoration-none" @onclick="() => SortBy(DocumentSort.SizeDesc, DocumentSort.SizeAsc)">Size</button>
+                        }
+                        else
+                        {
+                            <span>Size</span>
+                        }
+                    </th>
+                    <th scope="col">Project</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var document in Items)
+                {
+                    <tr>
+                        <td>@document.Title</td>
+                        <td>@document.Category</td>
+                        <td>@document.UploadedDate.ToLocalTime().ToString("MMM dd, yyyy")</td>
+                        <td>@FormatSize(document.FileSizeBytes)</td>
+                        <td>@(document.ProjectName ?? "-")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public IReadOnlyList<DocumentListItem> Items { get; set; } = Array.Empty<DocumentListItem>();
+
+    [Parameter]
+    public bool Sortable { get; set; }
+
+    [Parameter]
+    public EventCallback<DocumentSort> OnSort { get; set; }
+
+    private DocumentSort? currentSort;
+
+    private async Task SortBy(DocumentSort ascending, DocumentSort descending)
+    {
+        currentSort = currentSort == ascending ? descending : ascending;
+        await OnSort.InvokeAsync(currentSort.Value);
+    }
+
+    private static string FormatSize(long sizeBytes) => sizeBytes >= 1024 * 1024
+        ? $"{sizeBytes / (1024d * 1024d):0.##} MB"
+        : $"{sizeBytes / 1024d:0.##} KB";
+}
