@@ -257,6 +257,11 @@ ServiceFabricBackup/
 *.ldf
 *.ndf
 
+# Local SQLite database
+ContosoDashboard/*.db
+ContosoDashboard/*.db-shm
+ContosoDashboard/*.db-wal
+
 # Business Intelligence projects
 *.rdl.data
 *.bim.layout
